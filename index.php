@@ -13,8 +13,8 @@ $currentPokeImgFrontUrl = '';
 $currentPokeImgBackUrl = '';
 $currentPokeMoves = [];
 $currentPokeTypes = [];
-$goToPrevPokeName = '';
-$goToNextPokeName = '';
+$urlToPrevPokemon = '';
+$urlToNextPokemon = '';
 $prevPokeImgUrl = '';
 $nextPokeImgUrl = '';
 function fetchPokemon (string $url) : array {
@@ -66,24 +66,19 @@ if (!empty($_GET['searchPoke'])) {
 
     //// Get position of current pokemon in array
     $pos = array_search($name, $evolutions);
-    // Variables to store the name of the previous/next evolution (if they exists)
-    $prevEvolutionName = '';
-    $nextEvolutionName = '';
     // Check if there is a previous/next evolution
     if ($pos - 1 >= 0) {
-        $prevEvolutionName = $evolutions[$pos - 1];
         // Fetch and display image of the previous evolution
-        $prevPokeInfoRes = fetchPokemon('https://pokeapi.co/api/v2/pokemon/' . $prevEvolutionName);
+        $prevPokeInfoRes = fetchPokemon('https://pokeapi.co/api/v2/pokemon/' . $evolutions[$pos - 1]);
         $prevPokeImgUrl = $prevPokeInfoRes['sprites']['front_default'];
-        $goToPrevPokeName = "http://becode.local/20200714-pokedex/?searchPoke=" . $prevPokeInfoRes['name'];
+        $urlToPrevPokemon = "http://becode.local/20200714-pokedex/?searchPoke=" . $prevPokeInfoRes['name'];
     }
 
     if ($pos + 1 < count($evolutions)) {
-        $nextEvolutionName = $evolutions[$pos + 1];
         // Fetch and display image of the next evolution
-        $nextPokeInfoRes = fetchPokemon('https://pokeapi.co/api/v2/pokemon/' . $nextEvolutionName);
+        $nextPokeInfoRes = fetchPokemon('https://pokeapi.co/api/v2/pokemon/' . $evolutions[$pos + 1]);
         $nextPokeImgUrl = $nextPokeInfoRes['sprites']['front_default'];
-        $goToNextPokeName = "http://becode.local/20200714-pokedex/?searchPoke=" . $nextPokeInfoRes['name'];
+        $urlToNextPokemon = "http://becode.local/20200714-pokedex/?searchPoke=" . $nextPokeInfoRes['name'];
     }
 }
 ?>
@@ -150,8 +145,8 @@ if (!empty($_GET['searchPoke'])) {
                 <button id="run" class="btn btn-secondary" type="submit"><i class="fas fa-search"></i></button>
             </form>
             <div class="evolutionImgCtn">
-                <div title="Previous evolution" class="prevEvo"><?php if(!empty($prevPokeImgUrl)) echo "<a href=\"$goToPrevPokeName\"><img src=$prevPokeImgUrl alt='prevEvo' /></a>";  ?></div>
-                <div title="Next evolution" class="nextEvo"><?php if(!empty($nextPokeImgUrl)) echo "<a href=\"$goToNextPokeName\"><img src=$nextPokeImgUrl alt='nextEvo' /></a>";  ?></div>
+                <div title="Previous evolution" class="prevEvo"><?php if(!empty($prevPokeImgUrl)) echo "<a href=$urlToPrevPokemon><img src=$prevPokeImgUrl alt='prevEvo' /></a>";  ?></div>
+                <div title="Next evolution" class="nextEvo"><?php if(!empty($nextPokeImgUrl)) echo "<a href=$urlToNextPokemon><img src=$nextPokeImgUrl alt='nextEvo' /></a>";  ?></div>
             </div>
         </div>
 
