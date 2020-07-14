@@ -55,7 +55,7 @@ if (!empty($_GET['searchPoke'])) {
     //// Put all evolutions in an array
     $path = $evolutionRes['chain'];
     $evolutions = [$path['species']['name']];
-    function getSpecies($path, $evolutions)
+    function getSpecies(array $path, array $evolutions): array
     {
         while (count($path['evolves_to']) > 0) {
             foreach ($path['evolves_to'] as $evo) {
