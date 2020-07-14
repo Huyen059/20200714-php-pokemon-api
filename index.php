@@ -17,17 +17,22 @@ $goToPrevPokeName = '';
 $goToNextPokeName = '';
 $prevPokeImgUrl = '';
 $nextPokeImgUrl = '';
+function fetchPokemon (string $url) : array {
+    $res = file_get_contents($url);
+    $res = json_decode($res, true);
+    return $res;
+}
 
 if (!empty($_GET['searchPoke'])) {
     $searchPoke = strtolower($_GET['searchPoke']);
     //// Fetch data of that pokemon
-    $pokeInfoRes = file_get_contents('https://pokeapi.co/api/v2/pokemon/' . $searchPoke);
-    $pokeInfoRes = json_decode($pokeInfoRes, true);
+    $pokeInfoRes = fetchPokemon('https://pokeapi.co/api/v2/pokemon/' . $searchPoke);
     // Get ID, name, images, moves, types of current pokemon
     $id = $pokeInfoRes['id'];
     $name = $pokeInfoRes['name'];
     $currentPokeImgFrontUrl = $pokeInfoRes['sprites']['front_default'];
     $currentPokeImgBackUrl = $pokeInfoRes['sprites']['back_default'];
+
     $maxNumberOfMovesToDisplay = 4;
     $currentPokeMovesIndexes = array_rand($pokeInfoRes['moves'], min($maxNumberOfMovesToDisplay, count($pokeInfoRes['moves'])));
     if (!is_array($currentPokeMovesIndexes)) {
@@ -42,11 +47,8 @@ if (!empty($_GET['searchPoke'])) {
         $currentPokeTypes[] = $type['type']['name'];
     }
 
-
-
     //// Fetch evolution chain url
-    $evoChainInfoRes = file_get_contents('https://pokeapi.co/api/v2/pokemon-species/' . $id);
-    $evoChainInfoRes = json_decode($evoChainInfoRes, true);
+    $evoChainInfoRes = fetchPokemon('https://pokeapi.co/api/v2/pokemon-species/' . $id);
     $evoChainUrl = $evoChainInfoRes['evolution_chain']['url'];
     //// Fetch evolutions
     $evolutionRes = file_get_contents($evoChainUrl);
@@ -55,17 +57,6 @@ if (!empty($_GET['searchPoke'])) {
     //// Put all evolutions in an array
     $path = $evolutionRes['chain'];
     $evolutions = [$path['species']['name']];
-//    function getSpecies(array $path, array $evolutions): array
-//    {
-//        while (count($path['evolves_to']) > 0) {
-//            foreach ($path['evolves_to'] as $evo) {
-//                $evolutions[] = $evo['species']['name'];
-//            }
-//            $path = $path['evolves_to'][0];
-//        }
-//        return $evolutions;
-//    }
-//    $evolutions = getSpecies($path, $evolutions);
     while (count($path['evolves_to']) > 0) {
         foreach ($path['evolves_to'] as $evo) {
             $evolutions[] = $evo['species']['name'];
@@ -78,13 +69,11 @@ if (!empty($_GET['searchPoke'])) {
     // Variables to store the name of the previous/next evolution (if they exists)
     $prevEvolutionName = '';
     $nextEvolutionName = '';
-    // Check if there is a previous evolution
+    // Check if there is a previous/next evolution
     if ($pos - 1 >= 0) {
         $prevEvolutionName = $evolutions[$pos - 1];
         // Fetch and display image of the previous evolution
-
-        $prevPokeInfoRes = file_get_contents('https://pokeapi.co/api/v2/pokemon/' . $prevEvolutionName);
-        $prevPokeInfoRes = json_decode($prevPokeInfoRes, true);
+        $prevPokeInfoRes = fetchPokemon('https://pokeapi.co/api/v2/pokemon/' . $prevEvolutionName);
         $prevPokeImgUrl = $prevPokeInfoRes['sprites']['front_default'];
         $goToPrevPokeName = "http://becode.local/20200714-pokedex/?searchPoke=" . $prevPokeInfoRes['name'];
     }
@@ -92,14 +81,11 @@ if (!empty($_GET['searchPoke'])) {
     if ($pos + 1 < count($evolutions)) {
         $nextEvolutionName = $evolutions[$pos + 1];
         // Fetch and display image of the next evolution
-        $nextPokeInfoRes = file_get_contents('https://pokeapi.co/api/v2/pokemon/' . $nextEvolutionName);
-        $nextPokeInfoRes = json_decode($nextPokeInfoRes, true);
+        $nextPokeInfoRes = fetchPokemon('https://pokeapi.co/api/v2/pokemon/' . $nextEvolutionName);
         $nextPokeImgUrl = $nextPokeInfoRes['sprites']['front_default'];
         $goToNextPokeName = "http://becode.local/20200714-pokedex/?searchPoke=" . $nextPokeInfoRes['name'];
     }
 }
-
-
 ?>
 
 <!doctype html>
