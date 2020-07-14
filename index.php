@@ -55,17 +55,23 @@ if (!empty($_GET['searchPoke'])) {
     //// Put all evolutions in an array
     $path = $evolutionRes['chain'];
     $evolutions = [$path['species']['name']];
-    function getSpecies(array $path, array $evolutions): array
-    {
-        while (count($path['evolves_to']) > 0) {
-            foreach ($path['evolves_to'] as $evo) {
-                $evolutions[] = $evo['species']['name'];
-            }
-            $path = $path['evolves_to'][0];
+//    function getSpecies(array $path, array $evolutions): array
+//    {
+//        while (count($path['evolves_to']) > 0) {
+//            foreach ($path['evolves_to'] as $evo) {
+//                $evolutions[] = $evo['species']['name'];
+//            }
+//            $path = $path['evolves_to'][0];
+//        }
+//        return $evolutions;
+//    }
+//    $evolutions = getSpecies($path, $evolutions);
+    while (count($path['evolves_to']) > 0) {
+        foreach ($path['evolves_to'] as $evo) {
+            $evolutions[] = $evo['species']['name'];
         }
-        return $evolutions;
+        $path = $path['evolves_to'][0];
     }
-    $evolutions = getSpecies($path, $evolutions);
 
     //// Get position of current pokemon in array
     $pos = array_search($name, $evolutions);
