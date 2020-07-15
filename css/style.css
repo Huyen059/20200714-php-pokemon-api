@@ -126,8 +126,10 @@
       #pokedex main .evolutionImgCtn > div img {
         cursor: pointer; }
   #pokedex footer {
-    position: absolute;
-    bottom: 0;
-    padding: 1rem; }
+    display: block;
+    /*position: absolute;*/
+    /*bottom: 0;*/
+    padding: 1rem;
+  }
 
 /*# sourceMappingURL=style.css.map */
