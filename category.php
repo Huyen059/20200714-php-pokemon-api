@@ -20,15 +20,15 @@ $currentPage = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
 
 ////GET DATA AND WORK WITH THEM
 $type = '';
-$favoritePoke = '';
+$favoritePokes = [];
 
 
 if (isset($_GET['favorite'])) {
-    setcookie('favorite', $_GET['favorite'], 0);
+    setcookie('favorite', [$_GET['favorite']], 0);
 };
 
 if (isset($_COOKIE['favorite'])) {
-    $favoritePoke = $_COOKIE['favorite'];
+    $favoritePokes = $_COOKIE['favorite'];
 }
 
 
@@ -205,7 +205,7 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
                                    ?>page=<?= $currentPage; ?>&favorite=<?= $name; ?>">
                                     <i class="fas fa-heart"></i>
                                     <?php if (isset($_GET['favorite']) && $_GET['favorite'] === $name) {
-                                        $favoritePoke = $name;
+                                        $favoritePokes[] = $name;
                                     }; ?>
                                 </a>
                             </div>
@@ -216,9 +216,9 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
             <div class="pokeFavorite">
 
                 <?php
-                if (!empty($favoritePoke)) {
-                    echo "
-                    <a href='mailto: example@example.com'>
+                function displayFavorite(string $favoritePoke) : string {
+                    return "
+                        <a href='mailto: example@example.com'>
                             <h5>
                                 <span class='text-danger'><i class='fas fa-heart'></i></span>
                                 &nbsp;Favorite Pokemon&nbsp;
@@ -226,9 +226,17 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
                             </h5>
                             <img alt='Image N/A' src='".fetchPokemon("https://pokeapi.co/api/v2/pokemon/".$favoritePoke)['sprites']['front_default']."'/>
                             <p>".ucfirst($favoritePoke)."</p>
-                    </a>";
+                        </a>";
+                }
+
+                if (count($favoritePokes) > 0) {
+                    foreach ($favoritePokes as $favoritePoke) {
+                        displayFavorite($favoritePoke);
+                    }
                 } else if (isset($_COOKIE['favorite'])) {
-                    echo "<h5><span class='text-danger'><i class=\"fas fa-heart\"></i></span>&nbsp;Favorite Pokemon&nbsp;<span class='text-danger'><i class=\"fas fa-heart\"></i></span></h5><img alt='Image N/A' src='" . fetchPokemon("https://pokeapi.co/api/v2/pokemon/" . $_COOKIE['favorite'])['sprites']['front_default'] . "'/><p>" . ucfirst($_COOKIE['favorite']) . "</p>";
+                    foreach ($_COOKIE['favorite'] as $favoritePoke) {
+                        displayFavorite($favoritePoke);
+                    }
                 } else {
                     echo "No favorite pokemon.";
                 }
