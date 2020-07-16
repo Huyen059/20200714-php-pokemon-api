@@ -36,7 +36,7 @@ if (isset($_GET['types'])) {
     $type = $_GET['types'][0];
 }
 
-// Link here: becode.local/20200714-pokedex/category.php?types%5B%5D=fire&submit=Get+Selected+Values&page=2
+// Link here: becode.local/20200714-php-pokemon-api/category.php?types%5B%5D=fire&submit=Get+Selected+Values&page=2
 
 $pokemonsResponse = (isset($_GET['types'])) ? fetchPokemon("https://pokeapi.co/api/v2/type/" . $type) :
     fetchPokemon('https://pokeapi.co/api/v2/pokemon?limit=1000');
@@ -90,7 +90,7 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
                 <ul class="pagination">
                     <li class="page-item <?php if ($currentPage === 1) echo 'disabled'; ?>">
                         <a class="page-link"
-                           href="http://becode.local/20200714-pokedex/category.php?<?php
+                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
                            if (isset($_GET['types'])) echo "types%5B%5D=$type&submit=Display+one+type&";
                            ?>page=1"
                         >
@@ -99,7 +99,7 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
                     </li>
                     <li class="page-item <?php if ($currentPage === 1) echo 'disabled'; ?>">
                         <a class="page-link"
-                           href="http://becode.local/20200714-pokedex/category.php?<?php
+                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
                            if (isset($_GET['types'])) echo "types%5B%5D=$type&submit=Display+one+type&";
                            ?>page=<?php echo $currentPage === 1 ? $currentPage : $currentPage - 1; ?>"
                         >
@@ -108,7 +108,7 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
                     </li>
                     <li class="page-item active">
                         <a class="page-link"
-                           href="http://becode.local/20200714-pokedex/category.php?<?php
+                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
                            if (isset($_GET['types'])) echo "types%5B%5D=$type&submit=Display+one+type&";
                            ?>page=<?= $currentPage; ?>"
                         >
@@ -118,7 +118,7 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
                     </li>
                     <li class="page-item <?php if ($currentPage === (int)ceil(count($pokemons) / 20)) echo 'disabled'; ?>">
                         <a class="page-link"
-                           href="http://becode.local/20200714-pokedex/category.php?<?php
+                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
                            if (isset($_GET['types'])) echo "types%5B%5D=$type&submit=Display+one+type&";
                            ?>page=<?php echo $currentPage === ceil(count($pokemons) / 20) ? $currentPage : $currentPage + 1; ?>"
                         >
@@ -127,7 +127,7 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
                     </li>
                     <li class="page-item <?php if ($currentPage === (int)ceil(count($pokemons) / 20)) echo 'disabled'; ?>">
                         <a class="page-link"
-                           href="http://becode.local/20200714-pokedex/category.php?<?php
+                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
                            if (isset($_GET['types'])) echo "types%5B%5D=$type&submit=Display+one+type&";
                            ?>page=<?= ceil(count($pokemons) / 20); ?>"
                         >
@@ -200,7 +200,7 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
                             <div>
                                 <a title="Add to favorite"
                                    class="text-danger"
-                                   href="http://becode.local/20200714-pokedex/category.php?<?php
+                                   href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
                                    if (isset($_GET['types'])) echo "types%5B%5D=$type&submit=Display+one+type&";
                                    ?>page=<?= $currentPage; ?>&favorite=<?= $name; ?>">
                                     <i class="fas fa-heart"></i>
@@ -240,7 +240,7 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
                 <ul class="pagination">
                     <li class="page-item <?php if ($currentPage === 1) echo 'disabled'; ?>">
                         <a class="page-link"
-                           href="http://becode.local/20200714-pokedex/category.php?<?php
+                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
                            if (isset($_GET['types'])) echo "types%5B%5D=$type&submit=Display+one+type&";
                            ?>page=1"
                         >
@@ -249,7 +249,7 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
                     </li>
                     <li class="page-item <?php if ($currentPage === 1) echo 'disabled'; ?>">
                         <a class="page-link"
-                           href="http://becode.local/20200714-pokedex/category.php?<?php
+                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
                            if (isset($_GET['types'])) echo "types%5B%5D=$type&submit=Display+one+type&";
                            ?>page=<?php echo $currentPage === 1 ? $currentPage : $currentPage - 1; ?>"
                         >
@@ -258,7 +258,7 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
                     </li>
                     <li class="page-item active">
                         <a class="page-link"
-                           href="http://becode.local/20200714-pokedex/category.php?<?php
+                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
                            if (isset($_GET['types'])) echo "types%5B%5D=$type&submit=Display+one+type&";
                            ?>page=<?= $currentPage; ?>"
                         >
@@ -268,7 +268,7 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
                     </li>
                     <li class="page-item <?php if ($currentPage === (int)ceil(count($pokemons) / 20)) echo 'disabled'; ?>">
                         <a class="page-link"
-                           href="http://becode.local/20200714-pokedex/category.php?<?php
+                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
                            if (isset($_GET['types'])) echo "types%5B%5D=$type&submit=Display+one+type&";
                            ?>page=<?php echo $currentPage === ceil(count($pokemons) / 20) ? $currentPage : $currentPage + 1; ?>"
                         >
@@ -277,7 +277,7 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
                     </li>
                     <li class="page-item <?php if ($currentPage === (int)ceil(count($pokemons) / 20)) echo 'disabled'; ?>">
                         <a class="page-link"
-                           href="http://becode.local/20200714-pokedex/category.php?<?php
+                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
                            if (isset($_GET['types'])) echo "types%5B%5D=$type&submit=Display+one+type&";
                            ?>page=<?= ceil(count($pokemons) / 20); ?>"
                         >

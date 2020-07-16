@@ -71,14 +71,14 @@ if (!empty($_GET['searchPoke'])) {
         // Fetch and display image of the previous evolution
         $prevPokeInfoRes = fetchPokemon('https://pokeapi.co/api/v2/pokemon/' . $evolutions[$pos - 1]);
         $prevPokeImgUrl = $prevPokeInfoRes['sprites']['front_default'];
-        $urlToPrevPokemon = "http://becode.local/20200714-pokedex/?searchPoke=" . $prevPokeInfoRes['name'];
+        $urlToPrevPokemon = "http://becode.local/20200714-php-pokemon-api/?searchPoke=" . $prevPokeInfoRes['name'];
     }
 
     if ($pos + 1 < count($evolutions)) {
         // Fetch and display image of the next evolution
         $nextPokeInfoRes = fetchPokemon('https://pokeapi.co/api/v2/pokemon/' . $evolutions[$pos + 1]);
         $nextPokeImgUrl = $nextPokeInfoRes['sprites']['front_default'];
-        $urlToNextPokemon = "http://becode.local/20200714-pokedex/?searchPoke=" . $nextPokeInfoRes['name'];
+        $urlToNextPokemon = "http://becode.local/20200714-php-pokemon-api/?searchPoke=" . $nextPokeInfoRes['name'];
     }
 }
 ?>
@@ -136,8 +136,8 @@ if (!empty($_GET['searchPoke'])) {
 
             </div>
             <div class="idBtnCtn">
-                <a href=<?php if (!empty($pokeInfoRes) && $id > 1) echo "http://becode.local/20200714-pokedex/?searchPoke=" . ($id-1); ?>><button id="prevId" title="Previous ID" class="btn btn-success idBtnStyle"><i class="fas fa-backward"></i></button></a>
-                <a href=<?php if (!empty($pokeInfoRes)) echo "http://becode.local/20200714-pokedex/?searchPoke=" . ($id+1); ?>><button id="nextId" title="Next ID" class="btn btn-warning idBtnStyle"><i class="fas fa-forward"></i></button></a>
+                <a href=<?php if (!empty($pokeInfoRes) && $id > 1) echo "http://becode.local/20200714-php-pokemon-api/?searchPoke=" . ($id-1); ?>><button id="prevId" title="Previous ID" class="btn btn-success idBtnStyle"><i class="fas fa-backward"></i></button></a>
+                <a href=<?php if (!empty($pokeInfoRes)) echo "http://becode.local/20200714-php-pokemon-api/?searchPoke=" . ($id+1); ?>><button id="nextId" title="Next ID" class="btn btn-warning idBtnStyle"><i class="fas fa-forward"></i></button></a>
             </div>
             <div class="idScreenCtn"><?php if(!empty($id)) echo $id; ?></div>
             <div class="nameAndMovesCtn">
