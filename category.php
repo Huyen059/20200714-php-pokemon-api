@@ -16,16 +16,23 @@ function fetchPokemon(string $url): array
 
 //Define a function to display favorite pokemon(s)
 function displayFavorite(string $favoritePoke) : string {
+    $api = "https://pokeapi.co/api/v2/pokemon/" . $favoritePoke;
+    $imageUrl = fetchPokemon($api)['sprites']['front_default'];
+    $name = ucfirst($favoritePoke);
+    $link = "http%3A%2F%2Fbecode.local%2F20200714-php-pokemon-api%2Fcategory.php%3Fpage%3D1%26favorite%3D" . $favoritePoke;
+    $subject = "Cool%20pokemon";
+    $body = "Hey%2C%20look%20at%20this%20pokemon%2C%20it%20is%20so%20cool.%20%0ALink%3A%20" . $link;
     return "
-        <a class='col-sm-6 col-md-3' href='mailto:example.example.com?subject=Cool%20pokemon&body=Hey%2C%20look%20at%20this%20pokemon%2C%20it%20is%20so%20cool.%20%0ALink%3A%20http%3A%2F%2Fbecode.local%2F20200714-php-pokemon-api%2Fcategory.php%3Fpage%3D1%26favorite%3D".$favoritePoke."' />
-            <img alt='Image N/A' src='".fetchPokemon("https://pokeapi.co/api/v2/pokemon/".$favoritePoke)['sprites']['front_default']."'/>
-            <p>".ucfirst($favoritePoke)."</p>
-        </a>";
+        <a class='col-sm-6 col-md-3' href='mailto:example.example.com?subject=$subject&body=$body' >
+            <img alt='Image N/A' src=$imageUrl />
+            <p>$name</p>
+        </a>
+        ";
 }
 
 //VARIABLES
 //Current page
-$currentPage = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
+$currentPage = (int)(isset($_GET['page'])) ? (int)$_GET['page'] : 1;
 
 ////WORKING WITH COOKIE
 // For choosing number of pokemons to be displayed in one page
@@ -34,7 +41,7 @@ if (isset($_POST['pokePerPage'])) {
     setcookie('pokePerPage', $_POST['pokePerPage'], 0);
 }
 //Pokemon per page
-$pokePerPage = (isset($_COOKIE['pokePerPage'])) ? $_COOKIE['pokePerPage'] : 20;
+$pokePerPage = (int)$_COOKIE['pokePerPage'] ?? 20;
 
 //Array containing favorite pokemons
 $favoritePokes = [];
@@ -53,11 +60,9 @@ if (isset($_GET['types'])) {
 }
 
 ////GET DATA AND WORK WITH THEM
-$pokemonsResponse = (isset($_GET['types'])) ?
-    fetchPokemon("https://pokeapi.co/api/v2/type/" . $type) :
-    fetchPokemon('https://pokeapi.co/api/v2/pokemon?limit=1000');
 //Array containing all pokemons
-$pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsResponse['results'];
+$pokemons = (isset($_GET['types'])) ? fetchPokemon("https://pokeapi.co/api/v2/type/" . $type)['pokemon']
+    : fetchPokemon('https://pokeapi.co/api/v2/pokemon?limit=1000')['results'];
 ?>
 
 <!doctype html>
@@ -156,7 +161,9 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
         <div class="d-flex justify-content-center mb-5">
             <form method="post" class="mr-4">
                 <select name="pokePerPage" class="mr-2" id="pokePerPage">
-                    <option value="<?= (isset($_COOKIE['pokePerPage'])) ? $_COOKIE['pokePerPage'] : 20; ?>" ><?= (isset($_COOKIE['pokePerPage'])) ? 'Pokemons per page: '.$_COOKIE['pokePerPage'] : 'Pokemons per page: 20'; ?></option>
+                    <option value="<?= $_COOKIE['pokePerPage'] ?? 20; ?>">
+                        #pokemons/page: <?= $_COOKIE['pokePerPage'] ?? 20; ?>
+                    </option>
                     <option value="20">20</option>
                     <option value="40">40</option>
                     <option value="60">60</option>
@@ -165,7 +172,9 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
             </form>
             <form method="get" class="mr-4">
                 <select name="types[]" class="mr-2">
-                    <option value="<?php echo (!empty($type)) ? $type : ''; ?>"><?php echo (!empty($type)) ? 'Current type: ' . $type : 'Choose a type'; ?></option>
+                    <option value="<?= (empty($type)) ? '' : $type; ?>">
+                        <?= (empty($type)) ? 'Choose a type' : 'Current type: ' . $type; ?>
+                    </option>
                     <option value="normal">Normal</option>
                     <option value="fighting">Fighting</option>
                     <option value="flying">Flying</option>
@@ -188,7 +197,6 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
                     <option value="unknown">Unknown</option>
                 </select>
                 <input type="submit" name="submit" value="Display one type"/>
-
             </form>
             <a href="category.php">
                 <button>Display all types</button>
@@ -197,31 +205,28 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
 
         <div class="d-flex flex-column-reverse">
             <div class="row">
-                <?php foreach (array_slice($pokemons, ($currentPage - 1) * (int)$pokePerPage, (int)$pokePerPage) as $key => $pokemon): ?>
+
+                <?php
+                    foreach (array_slice($pokemons, ($currentPage - 1) * (int)$pokePerPage, (int)$pokePerPage) as $key => $pokemon):
+                        $pokemonUrl = (isset($_GET['types'])) ? $pokemon['pokemon']['url'] : $pokemon['url'];
+                        $pokemonImageUrl = fetchPokemon($pokemonUrl)['sprites']['front_default'];
+                        $name = (isset($_GET['types'])) ? $pokemon['pokemon']['name'] : $pokemon['name'];
+                ?>
                     <div class="col-sm-6 col-md-3 mb-4">
                         <div>
-                            <img
-                                    alt="Image N/A"
-                                    src=
-                                    <?php
-                                    $url = (isset($_GET['types'])) ? $pokemon['pokemon']['url'] : $pokemon['url'];
-                                    echo fetchPokemon($url)['sprites']['front_default'];
-                                    ?>
-                            />
+                            <img alt="Image N/A" src=<?=$pokemonImageUrl;?> />
                         </div>
                         <div>
                             <div>
-                                <?php
-                                $name = (isset($_GET['types'])) ? $pokemon['pokemon']['name'] : $pokemon['name'];
-                                echo ucfirst($name);
-                                ?>
+                                <?=ucfirst($name);?>
                             </div>
                             <div>
                                 <a title="Add to favorite"
                                    class="text-danger"
                                    href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
                                    if (isset($_GET['types'])) echo "types%5B%5D=$type&submit=Display+one+type&";
-                                   ?>page=<?= $currentPage; ?>&favorite=<?= $name; ?>">
+                                   ?>page=<?= $currentPage; ?>&favorite=<?= $name; ?>"
+                                >
                                     <i class="fas fa-heart"></i>
                                 </a>
                             </div>
