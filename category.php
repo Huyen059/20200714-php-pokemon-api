@@ -16,7 +16,6 @@ function fetchPokemon(string $url): array
 
 //Define a function to display favorite pokemon(s)
 function displayFavorite(string $favoritePoke) : string {
-    $mailto = "$favoritePoke";
     return "
         <a class='col-sm-6 col-md-3' href='mailto:example.example.com?subject=Cool%20pokemon&body=Hey%2C%20look%20at%20this%20pokemon%2C%20it%20is%20so%20cool.%20%0ALink%3A%20http%3A%2F%2Fbecode.local%2F20200714-php-pokemon-api%2Fcategory.php%3Fpage%3D1%26favorite%3D".$favoritePoke."' />
             <img alt='Image N/A' src='".fetchPokemon("https://pokeapi.co/api/v2/pokemon/".$favoritePoke)['sprites']['front_default']."'/>
