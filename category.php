@@ -26,10 +26,19 @@ function displayFavorite(string $favoritePoke) : string {
 //VARIABLES
 //Current page
 $currentPage = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
-//Array containing favorite pokemons
-$favoritePokes = [];
 
 ////WORKING WITH COOKIE
+// For choosing number of pokemons to be displayed in one page
+if (isset($_POST['pokePerPage'])) {
+    $_COOKIE['pokePerPage'] = $_POST['pokePerPage'];
+    setcookie('pokePerPage', $_POST['pokePerPage'], 0);
+}
+//Pokemon per page
+$pokePerPage = (isset($_COOKIE['pokePerPage'])) ? $_COOKIE['pokePerPage'] : 20;
+
+//Array containing favorite pokemons
+$favoritePokes = [];
+// For the favorite pokemon
 if (isset($_COOKIE['favorite'])) {
     $favoritePokes = unserialize($_COOKIE['favorite']);
 }
@@ -145,9 +154,18 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
         </div>
 
         <div class="d-flex justify-content-center mb-5">
-            <form action="#" method="get" class="mr-4">
+            <form method="post" class="mr-4">
+                <select name="pokePerPage" class="mr-2" id="pokePerPage">
+                    <option value="<?= (isset($_COOKIE['pokePerPage'])) ? $_COOKIE['pokePerPage'] : 20; ?>" ><?= (isset($_COOKIE['pokePerPage'])) ? 'Pokemons per page: '.$_COOKIE['pokePerPage'] : 'Pokemons per page: 20'; ?></option>
+                    <option value="20">20</option>
+                    <option value="40">40</option>
+                    <option value="60">60</option>
+                </select>
+                <input type="submit" name="submit" value="Display"/>
+            </form>
+            <form method="get" class="mr-4">
                 <select name="types[]" class="mr-2">
-                    <option value="<?php echo (!empty($type)) ? $type : 'none'; ?>"><?php echo (!empty($type)) ? 'Current type: ' . $type : 'Choose a type'; ?></option>
+                    <option value="<?php echo (!empty($type)) ? $type : ''; ?>"><?php echo (!empty($type)) ? 'Current type: ' . $type : 'Choose a type'; ?></option>
                     <option value="normal">Normal</option>
                     <option value="fighting">Fighting</option>
                     <option value="flying">Flying</option>
@@ -179,7 +197,7 @@ $pokemons = (isset($_GET['types'])) ? $pokemonsResponse['pokemon'] : $pokemonsRe
 
         <div class="d-flex flex-column-reverse">
             <div class="row">
-                <?php foreach (array_slice($pokemons, ($currentPage - 1) * 20, 20) as $key => $pokemon): ?>
+                <?php foreach (array_slice($pokemons, ($currentPage - 1) * (int)$pokePerPage, (int)$pokePerPage) as $key => $pokemon): ?>
                     <div class="col-sm-6 col-md-3 mb-4">
                         <div>
                             <img
