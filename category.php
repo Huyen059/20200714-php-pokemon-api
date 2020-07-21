@@ -19,9 +19,9 @@ function displayFavorite(string $favoritePoke) : string {
     $api = "https://pokeapi.co/api/v2/pokemon/" . $favoritePoke;
     $imageUrl = fetchPokemon($api)['sprites']['front_default'];
     $name = ucfirst($favoritePoke);
-    $link = "http%3A%2F%2Fbecode.local%2F20200714-php-pokemon-api%2Fcategory.php%3Fpage%3D1%26favorite%3D" . $favoritePoke;
-    $subject = "Cool%20pokemon";
-    $body = "Hey%2C%20look%20at%20this%20pokemon%2C%20it%20is%20so%20cool.%20%0ALink%3A%20" . $link;
+    $link = urlencode($_SERVER['HTTP_HOST']. $_SERVER['PHP_SELF'] . "/page=1&favorite=" . $favoritePoke);
+    $subject = urlencode("Cool pokemon");
+    $body = urlencode("Hey, look at this pokemon, it is so cool. Link: ") . $link;
     return "
         <a class='col-sm-6 col-md-3' href='mailto:example.example.com?subject=$subject&body=$body' >
             <img alt='Image N/A' src=$imageUrl />
@@ -41,7 +41,12 @@ if (isset($_POST['pokePerPage'])) {
     setcookie('pokePerPage', $_POST['pokePerPage'], 0);
 }
 //Pokemon per page
-$pokePerPage = (int)$_COOKIE['pokePerPage'] ?? 20;
+$pokePerPage = 20;
+if(isset($_COOKIE['pokePerPage'])){
+    $pokePerPage = (int) $_COOKIE['pokePerPage'];
+}
+
+//$pokePerPage = (int) $_COOKIE['pokePerPage'] ?? 20;
 
 //Array containing favorite pokemons
 $favoritePokes = [];
@@ -66,8 +71,12 @@ if (isset($_GET['types'])) {
 
 ////GET DATA AND WORK WITH THEM
 //Array containing all pokemons
-$pokemons = (isset($_GET['types'])) ? fetchPokemon("https://pokeapi.co/api/v2/type/" . $type)['pokemon']
-    : fetchPokemon('https://pokeapi.co/api/v2/pokemon?limit=1000')['results'];
+if (isset($_GET['types'])) {
+    $pokemons = fetchPokemon("https://pokeapi.co/api/v2/type/" . $type)['pokemon'];
+} else {
+    $pokemons = fetchPokemon('https://pokeapi.co/api/v2/pokemon?limit=1000')['results'];
+}
+
 ?>
 
 <!doctype html>
@@ -115,7 +124,7 @@ $pokemons = (isset($_GET['types'])) ? fetchPokemon("https://pokeapi.co/api/v2/ty
                 <ul class="pagination">
                     <li class="page-item <?php if ($currentPage === 1) echo 'disabled'; ?>">
                         <a class="page-link"
-                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
+                           href="category.php?<?php
                            if (isset($_GET['types'])) echo searchForType($type);
                            ?>page=1"
                         >
@@ -124,7 +133,7 @@ $pokemons = (isset($_GET['types'])) ? fetchPokemon("https://pokeapi.co/api/v2/ty
                     </li>
                     <li class="page-item <?php if ($currentPage === 1) echo 'disabled'; ?>">
                         <a class="page-link"
-                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
+                           href="category.php?<?php
                            if (isset($_GET['types'])) echo searchForType($type);
                            ?>page=<?php echo $currentPage === 1 ? $currentPage : $currentPage - 1; ?>"
                         >
@@ -133,7 +142,7 @@ $pokemons = (isset($_GET['types'])) ? fetchPokemon("https://pokeapi.co/api/v2/ty
                     </li>
                     <li class="page-item active">
                         <a class="page-link"
-                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
+                           href="category.php?<?php
                            if (isset($_GET['types'])) echo searchForType($type);
                            ?>page=<?= $currentPage; ?>"
                         >
@@ -143,7 +152,7 @@ $pokemons = (isset($_GET['types'])) ? fetchPokemon("https://pokeapi.co/api/v2/ty
                     </li>
                     <li class="page-item <?php if ($currentPage === (int)ceil(count($pokemons) / $pokePerPage)) echo 'disabled'; ?>">
                         <a class="page-link"
-                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
+                           href="category.php?<?php
                            if (isset($_GET['types'])) echo searchForType($type);
                            ?>page=<?php echo $currentPage === ceil(count($pokemons) / $pokePerPage) ? $currentPage : $currentPage + 1; ?>"
                         >
@@ -152,7 +161,7 @@ $pokemons = (isset($_GET['types'])) ? fetchPokemon("https://pokeapi.co/api/v2/ty
                     </li>
                     <li class="page-item <?php if ($currentPage === (int)ceil(count($pokemons) / $pokePerPage)) echo 'disabled'; ?>">
                         <a class="page-link"
-                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
+                           href="category.php?<?php
                            if (isset($_GET['types'])) echo searchForType($type);
                            ?>page=<?= ceil(count($pokemons) / $pokePerPage); ?>"
                         >
@@ -228,7 +237,7 @@ $pokemons = (isset($_GET['types'])) ? fetchPokemon("https://pokeapi.co/api/v2/ty
                             <div>
                                 <a title="Add to favorite"
                                    class="text-danger"
-                                   href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
+                                   href="category.php?<?php
                                    if (isset($_GET['types'])) echo "types%5B%5D=$type&submit=Display+one+type&";
                                    ?>page=<?= $currentPage; ?>&favorite=<?= $name; ?>"
                                 >
@@ -266,7 +275,7 @@ $pokemons = (isset($_GET['types'])) ? fetchPokemon("https://pokeapi.co/api/v2/ty
                 <ul class="pagination">
                     <li class="page-item <?php if ($currentPage === 1) echo 'disabled'; ?>">
                         <a class="page-link"
-                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
+                           href="category.php?<?php
                            if (isset($_GET['types'])) echo searchForType($type);
                            ?>page=1"
                         >
@@ -275,7 +284,7 @@ $pokemons = (isset($_GET['types'])) ? fetchPokemon("https://pokeapi.co/api/v2/ty
                     </li>
                     <li class="page-item <?php if ($currentPage === 1) echo 'disabled'; ?>">
                         <a class="page-link"
-                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
+                           href="category.php?<?php
                            if (isset($_GET['types'])) echo searchForType($type);
                            ?>page=<?php echo $currentPage === 1 ? $currentPage : $currentPage - 1; ?>"
                         >
@@ -284,7 +293,7 @@ $pokemons = (isset($_GET['types'])) ? fetchPokemon("https://pokeapi.co/api/v2/ty
                     </li>
                     <li class="page-item active">
                         <a class="page-link"
-                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
+                           href="category.php?<?php
                            if (isset($_GET['types'])) echo searchForType($type);
                            ?>page=<?= $currentPage; ?>"
                         >
@@ -294,7 +303,7 @@ $pokemons = (isset($_GET['types'])) ? fetchPokemon("https://pokeapi.co/api/v2/ty
                     </li>
                     <li class="page-item <?php if ($currentPage === (int)ceil(count($pokemons) / $pokePerPage)) echo 'disabled'; ?>">
                         <a class="page-link"
-                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
+                           href="category.php?<?php
                            if (isset($_GET['types'])) echo searchForType($type);
                            ?>page=<?php echo $currentPage === ceil(count($pokemons) / $pokePerPage) ? $currentPage : $currentPage + 1; ?>"
                         >
@@ -303,7 +312,7 @@ $pokemons = (isset($_GET['types'])) ? fetchPokemon("https://pokeapi.co/api/v2/ty
                     </li>
                     <li class="page-item <?php if ($currentPage === (int)ceil(count($pokemons) / $pokePerPage)) echo 'disabled'; ?>">
                         <a class="page-link"
-                           href="http://becode.local/20200714-php-pokemon-api/category.php?<?php
+                           href="category.php?<?php
                            if (isset($_GET['types'])) echo searchForType($type);
                            ?>page=<?= ceil(count($pokemons) / $pokePerPage); ?>"
                         >
@@ -313,6 +322,7 @@ $pokemons = (isset($_GET['types'])) ? fetchPokemon("https://pokeapi.co/api/v2/ty
                 </ul>
             </nav>
         </div>
+
 
     </main>
     <footer>
